@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Code Assistant - Debug, Complete & Document</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Mono&display=swap');
+    body {
+      font-family: 'Mono', monospace;
+      background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+      color: #e0e7ff;
+    }
+    .bg-glow {
+      background: radial-gradient(ellipse at center, rgba(79, 70, 229, 0.3) 0%, transparent 70%);
+    }
+    .fade-in {
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .code-block {
+      background: #1e1e2f;
+      border-left: 4px solid #4f46e5;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .tooltip {
+      position: relative;
+      display: inline-block;
+      cursor: help;
+    }
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 220px;
+      background-color: #4f46e5;
+      color: #fff;
+      text-align: left;
+      border-radius: 6px;
+      padding: 8px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -110px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 0.85rem;
+      line-height: 1.2;
+    }
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+  <div class="w-full max-w-5xl">
+    <div class="text-center mb-8">
+      <h1 class="text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
+        🚀 AI Code Assistant
+      </h1>
+      <p class="text-lg md:text-xl text-gray-300">Debugging, Code Completion & Automatic Documentation</p>
+    </div>
+
+    <!-- Feature selector -->
+    <div class="bg-glow rounded-lg p-6 mb-6">
+      <label for="feature" class="block text-lg font-semibold mb-1 text-indigo-300 flex items-center gap-2">
+        Select Feature:
+        <span class="tooltip text-sm text-indigo-400">ℹ
+          <span class="tooltiptext">
+            Choose the task you want the AI to perform:<br>
+            <strong>Code Completion:</strong> Continue your code snippet.<br>
+            <strong>Debugging Suggestion:</strong> Find bugs and suggest fixes.<br>
+            <strong>Automatic Documentation:</strong> Generate detailed comments or docs.
+          </span>
+        </span>
+      </label>
+      <select id="feature" class="w-full p-3 rounded bg-gray-800 text-gray-100 mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+        <option value="completion">Code Completion (continue your code)</option>
+        <option value="debug">Debugging Suggestion (find bugs & fixes)</option>
+        <option value="documentation">Automatic Documentation (generate comments)</option>
+      </select>
+
+      <label for="prompt" class="block text-lg font-semibold mb-2 text-indigo-300">Enter Your Code or Prompt:</label>
+      <textarea
+        id="prompt"
+        rows="6"
+        placeholder="Type your code or prompt here..."
+        class="w-full p-4 rounded-lg bg-gray-800 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition resize-none"
+      ></textarea>
+
+      <div class="mt-4 flex flex-wrap gap-4 items-center">
+        <input id="maxLength" type="number" value="200" min="50" class="w-24 p-2 bg-gray-700 rounded text-center" />
+        <label class="text-gray-300" for="maxLength">Max Length</label>
+
+        <input id="minLength" type="number" value="50" min="10" class="w-24 p-2 bg-gray-700 rounded text-center" />
+        <label class="text-gray-300" for="minLength">Min Length</label>
+
+        <select id="numSequences" class="p-2 bg-gray-700 rounded text-gray-100" aria-label="Number of outputs">
+          <option value="1">1 Output</option>
+          <option value="3">3 Outputs</option>
+        </select>
+        <label class="text-gray-300" for="numSequences">Number of Outputs</label>
+
+        <button
+          id="generateBtn"
+          class="ml-auto px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 rounded-lg font-semibold text-white transition transform hover:scale-105 disabled:opacity-50"
+        >
+          Generate Code Completion ✨
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div id="loading" class="hidden text-center mb-6">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
+      <p class="text-indigo-300 mt-2">Generating output...</p>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden">
+      <h2 class="text-2xl font-bold mb-6 text-center text-green-400">Results:</h2>
+      <div id="completionsContainer" class="grid gap-6 md:grid-cols-1 lg:grid-cols-3"></div>
+    </div>
+
+    <div class="text-center mt-8 text-gray-400 text-sm">
+      <p>Built for offline productivity. Always respect code ethics. 🤖</p>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:5000/complete';
+    const generateBtn = document.getElementById('generateBtn');
+    const promptInput = document.getElementById('prompt');
+    const loading = document.getElementById('loading');
+    const results = document.getElementById('results');
+    const completionsContainer = document.getElementById('completionsContainer');
+    const maxLengthInput = document.getElementById('maxLength');
+    const minLengthInput = document.getElementById('minLength');
+    const numSequencesSelect = document.getElementById('numSequences');
+    const featureSelect = document.getElementById('feature');
+
+    // Update placeholder and button text based on feature
+    function updateUIForFeature() {
+      const feature = featureSelect.value;
+      if (feature === 'completion') {
+        promptInput.placeholder = '# Python function to add two numbers\ndef add(a, b):';
+        generateBtn.textContent = 'Generate Code Completion ✨';
+      } else if (feature === 'debug') {
+        promptInput.placeholder = '# Debug this Python code and suggest fixes:\ndef add(a, b):\n    return a - b  # Bug here';
+        generateBtn.textContent = 'Generate Debugging Suggestions 🐞';
+      } else if (feature === 'documentation') {
+        promptInput.placeholder = '# Add documentation to this function:\ndef add(a, b):\n    return a + b';
+        generateBtn.textContent = 'Generate Documentation 📄';
+      }
+    }
+
+    featureSelect.addEventListener('change', updateUIForFeature);
+    updateUIForFeature();
+
+    generateBtn.addEventListener('click', async () => {
+      const prompt = promptInput.value.trim();
+      if (!prompt) {
+        alert('Please enter your code or prompt!');
+        return;
+      }
+
+      loading.classList.remove('hidden');
+      generateBtn.disabled = true;
+
+      results.classList.add('hidden');
+      completionsContainer.innerHTML = '';
+
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            prompt: `### Feature: ${featureSelect.value}\n${prompt}`,
+            max_length: parseInt(maxLengthInput.value),
+            min_length: parseInt(minLengthInput.value),
+            temperature: 1.0,
+            top_p: 0.95,
+            num_return_sequences: parseInt(numSequencesSelect.value)
+          })
+        });
+
+        const data = await response.json();
+        if (data.error) throw new Error(data.error);
+
+        displayCompletions(data.completions || [data.completion]);
+      } catch (error) {
+        alert('Error generating output: ' + error.message);
+        console.error(error);
+      } finally {
+        loading.classList.add('hidden');
+        generateBtn.disabled = false;
+      }
+    });
+
+    function displayCompletions(completions) {
+      completionsContainer.innerHTML = '';
+      results.classList.remove('hidden');
+
+      completions.forEach((completion, index) => {
+        const card = document.createElement('div');
+        card.className = 'code-block rounded-lg p-4 fade-in';
+
+        const title = document.createElement('h3');
+        title.className = 'text-lg font-semibold mb-3 text-indigo-300';
+        title.textContent = `Output ${index + 1}`;
+
+        const code = document.createElement('pre');
+        code.className = 'text-gray-300 overflow-x-auto';
+        code.textContent = completion;
+
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'mt-4 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded text-white transition';
+        copyBtn.textContent = 'Copy Output';
+        copyBtn.addEventListener('click', () => {
+          navigator.clipboard.writeText(completion);
+          copyBtn.textContent = 'Copied!';
+          setTimeout(() => (copyBtn.textContent = 'Copy Output'), 2000);
+        });
+
+        card.appendChild(title);
+        card.appendChild(code);
+        card.appendChild(copyBtn);
+        completionsContainer.appendChild(card);
+      });
+    }
+  </script>
+</body>
+</html>
