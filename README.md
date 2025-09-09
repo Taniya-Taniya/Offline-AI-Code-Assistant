@@ -47,7 +47,7 @@ pip install -r requirements.txt
 
 c. Run the backend server
 Run
-python backend.py
+python server.py
 The backend will start on:
 Run
 http://127.0.0.1:5000
@@ -101,4 +101,4 @@ MIT License
 Acknowledgments
 Hugging Face for GPT-Neo and Transformers.
 Tailwind CSS for styling.
-Flask for backend framework.
+Flask for backend framework
