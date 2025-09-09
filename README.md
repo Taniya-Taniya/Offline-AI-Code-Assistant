@@ -74,7 +74,7 @@ Run
 http://127.0.0.1:3000/index.html
 
 
-4. Using the App
+###4. Using the App
 The frontend will send API requests to the backend at http://127.0.0.1:5000/complete.
 Make sure the backend is running before using the frontend.
 Select a feature (Code Completion, Debugging, Documentation).
@@ -87,18 +87,22 @@ You can turn off your internet connection or enable flight mode.
 Restart the backend server (python backend.py).
 Serve the frontend as before.
 Use all features without internet connection.
+Project Structure
 
-
+Run
+Copy code
+1├── backend.py          # Flask backend server
+2├── frontend/           # Frontend static files (index.html, CSS, JS)
+3├── requirements.txt    # Python dependencies
+4└── README.md           # This file
 Troubleshooting
 CORS errors: If frontend and backend run on different ports, ensure your backend enables CORS (your backend.py already includes flask-cors).
 Model download issues: Ensure internet connection during first backend run.
 Frontend not loading: Check you are opening the correct URL (http://127.0.0.1:3000/index.html).
-
-
 License
 MIT License
 
 Acknowledgments
 Hugging Face for GPT-Neo and Transformers.
 Tailwind CSS for styling.
-Flask for backend framework
+Flask for backend framework.
