@@ -45,5 +45,21 @@ The backend will start on:
 ```
 http://127.0.0.1:5000
 ```
-Note: The first time you run the backend, the GPT-Neo model (~500MB) will be downloaded. This requires an active internet connection.
+"Note: The first time you run the backend, the GPT-Neo model (~500MB) will be downloaded. This requires an active internet connection."
 
+## 3. Frontend Setup
+You can serve the frontend files in the frontend/ folder using any static file server.
+For example, using live-server (Node.js):
+```bash
+npm install -g live-server
+live-server frontend --port=3000
+```
+Or using Python's built-in HTTP server:
+```bash
+cd frontend
+python -m http.server 3000
+```
+Open your browser and navigate to:
+```
+http://127.0.0.1:3000/index.html
+```
