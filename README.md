@@ -23,4 +23,27 @@ Frontend is a static site served separately (e.g., via a local development serve
 ```bash
 git clone https://github.com/yourusername/your-repo-name.git
 cd your-repo-name
-('\'\'\'')
+```
+## 2. Backend Setup
+a. Create and activate a Python virtual environment (recommended)
+```bash
+python -m venv venv
+# Windows
+venv\Scripts\activate
+# macOS/Linux
+source venv/bin/activate
+```
+b. Install backend dependencies
+```bash
+pip install -r requirements.txt
+```
+c. Run the backend server
+```bash
+python backend.py
+```
+The backend will start on:
+```
+http://127.0.0.1:5000
+```
+Note: The first time you run the backend, the GPT-Neo model (~500MB) will be downloaded. This requires an active internet connection.
+
