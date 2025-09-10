@@ -21,7 +21,7 @@ Frontend is a static site served separately (e.g., via a local development serve
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/your-repo-name.git
+git clone https://github.com/Taniya-Taniya/Offline-AI-Code-Assistant.git
 cd your-repo-name
 ```
 ### 2. Backend Setup
