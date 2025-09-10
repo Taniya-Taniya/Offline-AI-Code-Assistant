@@ -79,3 +79,25 @@ Once the GPT-Neo model is downloaded and cached locally by Hugging Face Transfor
 - Restart the backend server (python backend.py).
 - Serve the frontend as before.
 - Use all features without internet connection.
+
+## Project Structure
+```
+├── backend/             
+│   ├── requirements.txt    # Python dependencies for backend
+│   └── server.py           # Flask backend server script
+└── frontend/             
+    └── index.html          # Frontend HTML file
+```
+
+## Troubleshooting
+- **CORS errors:** If frontend and backend run on different ports, ensure your backend enables CORS (your backend.py already includes flask-cors).
+- **Model download issues:** Ensure internet connection during first backend run.
+- **Frontend not loading:** Check you are opening the correct URL  (http://127.0.0.1:3000/index.html).
+
+## License
+MIT License
+
+## Acknowledgments
+- Hugging Face for GPT-Neo and Transformers.
+- Tailwind CSS for styling.
+- Flask for backend framework.
