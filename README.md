@@ -24,7 +24,7 @@ Frontend is a static site served separately (e.g., via a local development serve
 git clone https://github.com/yourusername/your-repo-name.git
 cd your-repo-name
 ```
-## 2. Backend Setup
+### 2. Backend Setup
 a. Create and activate a Python virtual environment (recommended)
 ```bash
 python -m venv venv
@@ -47,7 +47,7 @@ http://127.0.0.1:5000
 ```
 "Note: The first time you run the backend, the GPT-Neo model (~500MB) will be downloaded. This requires an active internet connection."
 
-## 3. Frontend Setup
+### 3. Frontend Setup
 You can serve the frontend files in the frontend/ folder using any static file server.
 For example, using live-server (Node.js):
 ```bash
@@ -63,3 +63,19 @@ Open your browser and navigate to:
 ```
 http://127.0.0.1:3000/index.html
 ```
+
+### 4. Using the App
+- The frontend will send API requests to the backend at 
+`http://127.0.0.1:5000/complete.`
+- Make sure the backend is running before using the frontend.
+- Select a feature (Code Completion, Debugging, Documentation).
+- Enter your code snippet or prompt.
+- Click Generate to get AI-generated results.
+
+## Offline Usage (After Initial Setup)
+Once the GPT-Neo model is downloaded and cached locally by Hugging Face Transformers:
+
+- You can turn off your internet connection or enable flight mode.
+- Restart the backend server (python backend.py).
+- Serve the frontend as before.
+- Use all features without internet connection.
