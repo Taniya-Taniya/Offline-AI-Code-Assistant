@@ -16,3 +16,5 @@ Frontend is a static site served separately (e.g., via a local development serve
 - pip (Python package installer)
 - Node.js and npm (if you use a frontend dev server like `live-server` or similar)
 - Internet connection (required only for initial setup and model download)
+
+## Setup and Running Instructions:-
