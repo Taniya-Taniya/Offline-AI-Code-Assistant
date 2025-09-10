@@ -18,3 +18,9 @@ Frontend is a static site served separately (e.g., via a local development serve
 - Internet connection (required only for initial setup and model download)
 
 ## Setup and Running Instructions:-
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/yourusername/your-repo-name.git
+cd your-repo-name
